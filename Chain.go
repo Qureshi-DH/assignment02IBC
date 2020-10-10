@@ -38,6 +38,9 @@ func InsertBlock(spendingUser string, receivingUser string, miner string, amount
 	if miner != rootUser {
 		format.Println("Error 4532: Only " + rootUser + " can mine blocks")
 		return chainHead
+	} else if CalculateBalance(spendingUser, chainHead) < amount {
+		format.Println("Error 4533: " + spendingUser + " doesn't have enough balance")
+		return chainHead
 	}
 
 	block := Block{}
@@ -52,6 +55,7 @@ func InsertBlock(spendingUser string, receivingUser string, miner string, amount
 
 	block.Spender[spendingUser] -= amount
 	block.Receiver[receivingUser] += amount
+	block.Receiver[miner] += amount
 
 	block.CurrentHash = CalculateHash(&block)
 
