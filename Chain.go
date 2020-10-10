@@ -43,7 +43,7 @@ func InsertBlock(spendingUser string, receivingUser string, miner string, amount
 		return chainHead
 	}
 
-	block := Block{}
+	block := Block{Spender: make(map[string]int), Receiver: make(map[string]int)}
 
 	if chainHead != nil {
 		block.PrevHash = chainHead.CurrentHash
@@ -53,9 +53,9 @@ func InsertBlock(spendingUser string, receivingUser string, miner string, amount
 		block.PrevPointer = nil
 	}
 
-	block.Spender[spendingUser] -= amount
+	block.Spender[spendingUser] += amount
 	block.Receiver[receivingUser] += amount
-	block.Receiver[miner] += amount
+	block.Receiver[miner] += miningReward
 
 	block.CurrentHash = CalculateHash(&block)
 
